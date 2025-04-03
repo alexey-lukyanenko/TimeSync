@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Configuration status="INFO">
+    <Appenders>
+        <File name="file"
+              fileName="logs/${project.artifactId}.log"
+              bufferedIO="true"
+              append="true">
+            <PatternLayout pattern="%-5level %d{yyy-MM-dd HH:mm:ss} [%t] %logger{36} - %msg%n" charset="UTF-8"/>
+        </File>
+    </Appenders>
+    <Loggers>
+        <Root level="INFO">
+            <AppenderRef ref="file"/>
+        </Root>
+    </Loggers>
+</Configuration>
