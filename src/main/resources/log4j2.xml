@@ -5,7 +5,7 @@
               fileName="logs/${project.artifactId}.log"
               bufferedIO="true"
               append="true">
-            <PatternLayout pattern="%-5level %d{yyy-MM-dd HH:mm:ss} [%t] %logger{36} - %msg%n" charset="UTF-8"/>
+            <PatternLayout pattern="%-5level %d{yyy-MM-dd HH:mm:ss} [%t] %logger{-4} - %msg%n" charset="UTF-8"/>
         </File>
     </Appenders>
     <Loggers>
