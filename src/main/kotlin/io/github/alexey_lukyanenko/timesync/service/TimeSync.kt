@@ -7,6 +7,8 @@ import io.github.alexey_lukyanenko.timesync.lib.timezonedb.GetTimeZone
 import org.apache.logging.log4j.LogManager
 import java.time.Duration
 import java.time.Instant
+import java.time.LocalDateTime
+import java.time.ZoneOffset
 import java.util.Calendar
 import java.util.TimeZone
 import java.util.concurrent.ScheduledThreadPoolExecutor
@@ -16,6 +18,8 @@ import java.util.concurrent.TimeUnit.SECONDS
 class TimeSync(private val config: Config) {
     private val logger = LogManager.getLogger()
     private val scheduler = ScheduledThreadPoolExecutor(1)
+    private val limit = Duration.ofSeconds(5)
+    private val timeZoneNoOffset = TimeZone.getTimeZone(ZoneOffset.UTC)
     
     init {
         scheduler.submit(::taskHandler)
@@ -24,8 +28,9 @@ class TimeSync(private val config: Config) {
     private fun taskHandler() {
         val data = GetTimeZone(config.timeZone, config.apiKey)()
         val apiNow = Instant.ofEpochSecond(data.now)
+        val thisNow = LocalDateTime.now().toInstant(ZoneOffset.UTC)
         try {
-            if (Duration.between(Instant.now(), apiNow).abs() > Duration.ofSeconds(5)) {
+            if (Duration.between(thisNow, apiNow).abs() > limit) {
                 sync(data.now)
             }
         } finally {
@@ -34,8 +39,8 @@ class TimeSync(private val config: Config) {
         }
     }
 
-    fun sync(now: Long) {
-        val cal = Calendar.getInstance(TimeZone.getTimeZone("UTC"))
+    private fun sync(now: Long) {
+        val cal = Calendar.getInstance(timeZoneNoOffset)
         cal.timeInMillis = SECONDS.toMillis(now)
         val winTime = WinBase.SYSTEMTIME()
         winTime.fromCalendar(cal)
