@@ -45,6 +45,9 @@ class TimeSync(private val config: Config) {
         val winTime = WinBase.SYSTEMTIME()
         winTime.fromCalendar(cal)
         Kernel32.INSTANCE.SetLocalTime(winTime)
-        logger.info("Synchronized")
+    }
+
+    fun stop() {
+        scheduler.shutdownNow()
     }
 }

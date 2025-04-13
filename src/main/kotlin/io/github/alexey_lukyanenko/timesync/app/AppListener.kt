@@ -18,5 +18,7 @@ class AppListener : ServletContextListener {
         }
     }
 
-    override fun contextDestroyed(event: ServletContextEvent) {}
+    override fun contextDestroyed(event: ServletContextEvent) {
+        service.stop()
+    }
 }
