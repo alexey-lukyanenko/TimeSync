@@ -30,8 +30,10 @@ class TimeSync(private val config: Config) {
         val apiNow = Instant.ofEpochSecond(data.now)
         val thisNow = LocalDateTime.now().toInstant(ZoneOffset.UTC)
         try {
-            if (Duration.between(thisNow, apiNow).abs() > limit) {
+            val difference = Duration.between(thisNow, apiNow).abs()
+            if (difference > limit) {
                 sync(data.now)
+                logger.info("Synchronized: difference was [{}]", difference)
             }
         } finally {
             scheduler.schedule(::taskHandler, 12, HOURS)
